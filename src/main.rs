@@ -9,58 +9,92 @@ fn main() {
 
     "#
     );
+    println!("   -------------------- Main Menu ------------------------- \n");
     println!("   [ Options: Fah to Cels [1] | Cels to Fah [2] | Quit [q] ]");
 
     loop {
-
-        let mut option_input = String::new();
+        let mut choice = String::new();
 
         print!("\n Enter an option: ");
         io::stdout().flush().expect("Flush failed");
 
-        io::stdin().read_line(&mut option_input).expect("Failed to read input!");
-        let option_input = option_input.trim();
+        io::stdin()
+            .read_line(&mut choice)
+            .expect("Failed to read input!");
+        let choice = choice.trim();
 
-        if option_input == "1" {
-            let mut number = String::new();
+        match choice {
+            "q" => {
+                println!("\n   ------------------ Quitting Program! ------------------- ");
+                break;
+            }
+            "1" => {
+                println!("\n Chose option [1]");
+                print!("   󰘍 Enter a fahrenheit value: ");
+                io::stdout().flush().expect("Flush failed!");
 
-            print!("\n Chose option [1] | Enter a number: ");
-            io::stdout().flush().expect("Flush failed");
+                match read_temprature() {
+                    Some(num) => {
+                        let celsius = calc_fahrenheit_to_celsius(num);
+                        println!("\n   󰁔 Result: {}°F converted is {}°C", num, celsius.round());
+                    }
+                    None => {
+                        println!("\n -- Returning to main menu...\n");
+                    }
+                }
+            }
+            "2" => {
+                println!("\n Chose option [2]");
+                print!("   󰘍 Enter a celsius value: ");
+                io::stdout().flush().expect("Flush failed!");
 
-            io::stdin()
-                .read_line(&mut number)
-                .expect("Failed to read input!");
-            let number: f64 = number.trim().parse().expect("Failed to parse input");
+                match read_temprature() {
+                    Some(num) => {
+                        let fahrenheit = calc_celsius_to_fahrenheit(num);
+                        println!("\n   󰁔 Result: {}°C converted is {}°F", num, fahrenheit.round());
+                    }
+                    None => {
+                        println!("\n -- Returning to main menu...\n");
+                    }
+                }
 
-            let calc_cels = calc_fah_to_cels(number);
-            println!(" Number converted Fahrenheit to Celsius is : {}°C", calc_cels.round());
-            break;
-
-        } else if option_input == "2" {
-            let mut number = String::new();
-
-            print!("\n Chose option [2] | Enter a number: ");
-            io::stdout().flush().expect("Flush failed");
-
-            io::stdin()
-                .read_line(&mut number)
-                .expect("Failed to read input!");
-            let number: f64 = number.trim().parse().expect("Failed to parse input");
-
-            let calc_fah = calc_cels_to_fah(number);
-
-            println!(" Number converted from Celsius to Fahrenheit is : {}°F", calc_fah.round());
-            break;
+            }
+            _ => {
+                println!("\n Please enter a valid choice or press 'q' to Quit.");
+            }
         }
     }
 }
 
-fn calc_fah_to_cels(num: f64) -> f64 {
+// ---------------------- COMPUTE FUNCTIONS -----------------------------
+
+fn calc_fahrenheit_to_celsius(num: f64) -> f64 {
     (num - 32.0) * 5.0 / 9.0
 }
 
-fn calc_cels_to_fah(num: f64) -> f64 {
-    (num * 9.0 / 5.0 ) + 32.0
+fn calc_celsius_to_fahrenheit(num: f64) -> f64 {
+    (num * 9.0 / 5.0) + 32.0
 }
 
+// ------------------------ HELPER FUNCTIONS  ------------------------------
 
+fn read_temprature() -> Option<f64> {
+    let mut input = String::new();
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
+
+    let input = input.trim();
+
+    if input == "q" || input == "quit" || input == "exit" {
+        return None;
+    }
+
+    match input.parse::<f64>() {
+        Ok(num) => Some(num),
+        Err(_) => {
+            println!("Not a valid input, please enter a number or press 'q' to quit.");
+            None
+        }
+    }
+}
