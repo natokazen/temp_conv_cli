@@ -60,5 +60,7 @@ fn calc_fah_to_cels(num: f64) -> f64 {
 }
 
 fn calc_cels_to_fah(num: f64) -> f64 {
-    (num + 32.0) * 9.0 / 5.0
+    (num * 9.0 / 5.0 ) + 32.0
 }
+
+
